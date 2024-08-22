@@ -1,20 +1,22 @@
 import DeployButton from "@/components/DeployButton";
 import AuthButton from "@/components/AuthButton";
 import { createClient } from "@/utils/supabase/server";
-import FetchDataSteps from "@/components/tutorial/FetchDataSteps";
-import Header from "@/components/Header";
 import { redirect } from "next/navigation";
+// import { useFormState } from "react-dom";
+import { createNewTask, getTasks } from "@/lib/actions";
 
 export default async function ProtectedPage() {
   const supabase = createClient();
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { user }} = await supabase.auth.getUser();
+  const tasks = await getTasks();
+  console.log(tasks);
 
   if (!user) {
     return redirect("/login");
   }
+
+  // const [state, formAction] = useFormState(createNewTask, null);
 
   return (
     <div className="flex-1 w-full flex flex-col gap-20 items-center">
@@ -32,10 +34,15 @@ export default async function ProtectedPage() {
       </div>
 
       <div className="flex-1 flex flex-col gap-20 max-w-4xl px-3">
-        <Header />
         <main className="flex-1 flex flex-col gap-6">
-          <h2 className="font-bold text-2xl mb-4">Next steps</h2>
-          <FetchDataSteps />
+          <h2 className="font-bold text-2xl mb-4">Tasks</h2>
+          <pre>{JSON.stringify(tasks, null, 2)}</pre>
+          <div>
+            <form action={createNewTask}>
+              <input type="text" name="newTask"/>
+              <button type="submit" className="bg-purple-600 p-1 m-1">Send</button>
+            </form>
+          </div>
         </main>
       </div>
 
