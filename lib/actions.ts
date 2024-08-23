@@ -1,6 +1,5 @@
 "use server"
 import { createClient } from "@/utils/supabase/server";
-import { data } from "autoprefixer";
 import { revalidatePath } from "next/cache";
 
 export const getTasks = async ()=>{
